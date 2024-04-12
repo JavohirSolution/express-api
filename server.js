@@ -1,21 +1,23 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
 const app = express();
-app.use(express.json())
-require('dotenv').config();
-const db = require('./config/db.js');
+app.use(express.json());
 
-const UserRoute = require("./routes/userRoutes.js");
-const ExamRote = require("./routes/examRoutes.js");
-// const AuthExams = require('./routes/userExamsRoute');
-const userModel = require('./models/users.js');
+dotenv.config();
 
-app.use("/api/users", UserRoute);
-app.use("/api/exams", ExamRote);
-// app.use("/api/", AuthExams);
+const connectDB = require('./config/db');
+const userRoutes = require("./routes/userRoutes");
+const examRoutes = require("./routes/examRoutes");
 
-db()
-const PORT = process.env.PORT || 8000
+connectDB(process.env.MONGO_URL);
+
+app.use("/api/users", userRoutes);
+app.use("/api/exams", examRoutes);
+
+const PORT = process.env.PORT || 8000;
+
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-})
+    console.log(`[server]: Server is running on http://localhost:${PORT}`);
+});
